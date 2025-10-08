@@ -1,0 +1,23 @@
+commit e9e40400003db2e4f12dba85acabbaf2212a520f
+Author: Scott Shambarger <devel@shambarger.net>
+Date:   Sat Dec 7 16:37:28 2024 +0000
+
+    linux: Allow the __NR_rt_sigprocmask syscall
+    
+    Fixes recent glibc changes to getrandom() used by arc4random().
+    Fixes #421.
+
+diff --git a/src/privsep-linux.c b/src/privsep-linux.c
+index a40f2979238ee127..36a85c8d47a77674 100644
+--- a/src/privsep-linux.c
++++ b/src/privsep-linux.c
+@@ -409,6 +409,9 @@ static struct sock_filter ps_seccomp_filter[] = {
+ #ifdef __NR_recvmsg
+ 	SECCOMP_ALLOW(__NR_recvmsg),
+ #endif
++#ifdef __NR_rt_sigprocmask
++	SECCOMP_ALLOW(__NR_rt_sigprocmask),
++#endif
+ #ifdef __NR_rt_sigreturn
+ 	SECCOMP_ALLOW(__NR_rt_sigreturn),
+ #endif
